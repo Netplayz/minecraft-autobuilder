@@ -39,11 +39,16 @@ java {
     withSourcesJar()
 }
 
+def baritoneJar = file("libs/baritone-unoptimized-fabric-26.2.jar")
+
 jar {
     from("LICENSE") {
         rename { "${it}_${base.archivesName}" }
     }
-    from(fileTree(dir: "libs", include: "*.jar").collect { zipTree(it) }) {
+    from(zipTree(baritoneJar)) {
+        exclude "fabric.mod.json"
+    }
+    from({ zipTree(zipTree(baritoneJar).find { it.name.endsWith(".jar") && it.path.contains("META-INF/jars/") }) }) {
         exclude "fabric.mod.json"
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
