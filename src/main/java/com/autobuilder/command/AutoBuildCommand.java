@@ -64,7 +64,7 @@ public class AutoBuildCommand {
         if (names.isEmpty()) {
             ctx.getSource().sendSuccess(() ->
                     Component.literal(PREFIX + "§eNo schematics found. Place .schematic files in autobuilder/schematics/"), false);
-            return 0;
+            return Command.SINGLE_SUCCESS;
         }
 
         ctx.getSource().sendSuccess(() ->
