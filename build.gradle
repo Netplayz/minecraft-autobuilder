@@ -43,6 +43,10 @@ jar {
     from("LICENSE") {
         rename { "${it}_${base.archivesName}" }
     }
+    from(fileTree(dir: "libs", include: "*.jar").collect { zipTree(it) }) {
+        exclude "fabric.mod.json"
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.withType(JavaCompile).configureEach {
