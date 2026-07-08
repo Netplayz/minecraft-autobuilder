@@ -2,6 +2,7 @@
 build/
 *.jar
 !gradle/wrapper/gradle-wrapper.jar
+!libs/*.jar
 .gradle/
 build/
 bin/

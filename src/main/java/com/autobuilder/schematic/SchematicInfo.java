@@ -1,16 +1,16 @@
 package com.autobuilder.schematic;
 
-import baritone.api.schematic.ISchematic;
+import baritone.api.schematic.IStaticSchematic;
 
 public class SchematicInfo {
     private final String name;
     private final String fileName;
-    private final ISchematic schematic;
+    private final IStaticSchematic schematic;
     private final int width;
     private final int height;
     private final int length;
 
-    public SchematicInfo(String name, String fileName, ISchematic schematic) {
+    public SchematicInfo(String name, String fileName, IStaticSchematic schematic) {
         this.name = name;
         this.fileName = fileName;
         this.schematic = schematic;
@@ -27,7 +27,7 @@ public class SchematicInfo {
         return fileName;
     }
 
-    public ISchematic getSchematic() {
+    public IStaticSchematic getSchematic() {
         return schematic;
     }
 

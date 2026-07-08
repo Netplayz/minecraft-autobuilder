@@ -102,8 +102,7 @@ public class BuildManager {
         }
 
         materialManager.cancelGathering();
-        baritone.getBuilderProcess().cancel();
-        baritone.getMineProcess().cancel();
+        baritone.getPathingBehavior().cancelEverything();
         currentJob.setState(BuildState.IDLE);
         currentJob = null;
         sendMsg("§cBuild cancelled.");

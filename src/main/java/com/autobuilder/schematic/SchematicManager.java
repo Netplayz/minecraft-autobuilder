@@ -1,10 +1,12 @@
 package com.autobuilder.schematic;
 
-import baritone.api.schematic.ISchematic;
-import baritone.api.schematic.format.DefaultSchematicFormats;
+import baritone.api.BaritoneAPI;
+import baritone.api.schematic.IStaticSchematic;
+import baritone.api.schematic.format.ISchematicFormat;
 import com.autobuilder.config.AutoBuilderConfig;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -34,16 +36,22 @@ public class SchematicManager {
 
     private void loadSchematic(Path path) {
         try {
-            ISchematic schematic = DefaultSchematicFormats.parse(path.toFile());
-            if (schematic == null) return;
+            Optional<ISchematicFormat> optFormat = BaritoneAPI.getProvider()
+                    .getSchematicSystem().getByFile(path.toFile());
+            if (optFormat.isEmpty()) return;
 
-            String fileName = path.getFileName().toString();
-            String name = fileName.contains(".")
-                    ? fileName.substring(0, fileName.lastIndexOf('.'))
-                    : fileName;
+            try (InputStream in = Files.newInputStream(path)) {
+                IStaticSchematic schematic = optFormat.get().parse(in);
+                if (schematic == null) return;
 
-            SchematicInfo info = new SchematicInfo(name, fileName, schematic);
-            schematics.put(name.toLowerCase(), info);
+                String fileName = path.getFileName().toString();
+                String name = fileName.contains(".")
+                        ? fileName.substring(0, fileName.lastIndexOf('.'))
+                        : fileName;
+
+                SchematicInfo info = new SchematicInfo(name, fileName, schematic);
+                schematics.put(name.toLowerCase(), info);
+            }
         } catch (Exception ignored) {}
     }
 

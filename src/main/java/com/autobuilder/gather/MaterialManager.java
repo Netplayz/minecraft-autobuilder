@@ -4,6 +4,7 @@ import baritone.api.BaritoneAPI;
 import baritone.api.IBaritone;
 import baritone.api.utils.BlockOptionalMeta;
 import baritone.api.utils.BlockOptionalMetaLookup;
+import com.autobuilder.config.AutoBuilderConfig;
 import com.autobuilder.util.BlockCounter;
 import com.autobuilder.util.InventoryHelper;
 import net.minecraft.client.Minecraft;
