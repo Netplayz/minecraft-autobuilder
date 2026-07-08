@@ -10,7 +10,7 @@
     "icon": "assets/autobuilder/icon.png",
     "environment": "client",
     "entrypoints": {
-        "main": ["com.autobuilder.AutoBuilderMod"]
+        "client": ["com.autobuilder.AutoBuilderMod"]
     },
     "depends": {
         "fabricloader": ">=0.18.0",
