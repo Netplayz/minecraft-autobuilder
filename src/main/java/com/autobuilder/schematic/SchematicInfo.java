@@ -14,9 +14,15 @@ public class SchematicInfo {
         this.name = name;
         this.fileName = fileName;
         this.schematic = schematic;
-        this.width = schematic.widthX();
-        this.height = schematic.heightY();
-        this.length = schematic.lengthZ();
+        if (schematic != null) {
+            this.width = schematic.widthX();
+            this.height = schematic.heightY();
+            this.length = schematic.lengthZ();
+        } else {
+            this.width = 0;
+            this.height = 0;
+            this.length = 0;
+        }
     }
 
     public String getName() {

@@ -8,7 +8,6 @@ import com.autobuilder.gather.MaterialRequirement;
 import com.autobuilder.schematic.SchematicInfo;
 import com.autobuilder.schematic.SchematicManager;
 import com.autobuilder.util.BlockCounter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -18,7 +17,7 @@ import net.minecraft.network.chat.Component;
 import java.util.List;
 
 public class SchematicScreen extends Screen {
-    private static final int LIST_WIDTH = 200;
+    private static final int SIDEBAR_WIDTH = 200;
     private static final int ITEM_HEIGHT = 22;
 
     private final SchematicManager schematicManager;
@@ -31,6 +30,7 @@ public class SchematicScreen extends Screen {
     private String statusMessage;
     private long statusMessageTime;
 
+    private Button litematicaButton;
     private Button startButton;
     private Button gatherButton;
     private Button cancelButton;
@@ -45,30 +45,37 @@ public class SchematicScreen extends Screen {
 
     @Override
     protected void init() {
-        int leftPanelWidth = LIST_WIDTH;
-        int rightX = leftPanelWidth + 20;
-        int buttonWidth = 140;
-        int centerY = height / 2 - 40;
+        int cx = width / 2;
+        int bw = 160;
 
-        startButton = addRenderableWidget(Button.builder(
-                Component.literal("Start Build"),
-                btn -> startBuild()
-        ).bounds(rightX, centerY, buttonWidth, 20).build());
-
-        gatherButton = addRenderableWidget(Button.builder(
-                Component.literal("Gather Only"),
-                btn -> gatherOnly()
-        ).bounds(rightX, centerY + 26, buttonWidth, 20).build());
+        litematicaButton = addRenderableWidget(Button.builder(
+                Component.literal("\u00a76\u00a7lBuild Litematica Placement"),
+                btn -> buildLitematica()
+        ).bounds(cx - bw / 2, 30, bw, 24).build());
 
         cancelButton = addRenderableWidget(Button.builder(
                 Component.literal("Cancel"),
                 btn -> cancelBuild()
-        ).bounds(rightX, centerY + 52, buttonWidth - 50, 20).build());
+        ).bounds(cx - bw / 2, 60, bw / 2 - 4, 20).build());
 
         reloadButton = addRenderableWidget(Button.builder(
-                Component.literal("\u00a7aReload"),
+                Component.literal("\u00a7aReload Schematics"),
                 btn -> reloadSchematics()
-        ).bounds(rightX + buttonWidth - 50, centerY + 52, 50, 20).build());
+        ).bounds(cx + 4, 60, bw / 2 - 4, 20).build());
+
+        int fileSectionTop = 95;
+        int fileLabelY = fileSectionTop + 26;
+        int fileButtonY = fileLabelY + 4;
+
+        startButton = addRenderableWidget(Button.builder(
+                Component.literal("Start Build"),
+                btn -> startBuild()
+        ).bounds(cx - bw / 2, fileButtonY, bw, 20).build());
+
+        gatherButton = addRenderableWidget(Button.builder(
+                Component.literal("Gather Only"),
+                btn -> gatherOnly()
+        ).bounds(cx - bw / 2, fileButtonY + 26, bw, 20).build());
 
         updateButtons();
     }
@@ -77,12 +84,13 @@ public class SchematicScreen extends Screen {
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         extractMenuBackground(graphics);
 
-        int leftPanelWidth = LIST_WIDTH;
+        int cx = width / 2;
+        int sidebarRight = SIDEBAR_WIDTH;
         int listTop = 22;
         int listBottom = height - 22;
         int listHeight = listBottom - listTop;
 
-        graphics.fill(0, 0, leftPanelWidth, height, 0x88000000);
+        graphics.fill(0, 0, sidebarRight, height, 0x88000000);
 
         graphics.text(font, Component.literal("\u00a76\u00a7lAutoBuilder"), 6, 6, 0xFFFFFFFF);
 
@@ -90,7 +98,6 @@ public class SchematicScreen extends Screen {
 
         int totalItemHeight = schematics.size() * ITEM_HEIGHT;
         int maxScroll = Math.max(0, totalItemHeight - listHeight);
-
         if (scrollOffset > maxScroll) scrollOffset = maxScroll;
         if (scrollOffset < 0) scrollOffset = 0;
 
@@ -100,9 +107,8 @@ public class SchematicScreen extends Screen {
             int itemY = y + i * ITEM_HEIGHT;
             if (itemY + ITEM_HEIGHT < listTop || itemY > listBottom) continue;
 
-            boolean hovered = mouseX >= 2 && mouseX <= leftPanelWidth - 2
+            boolean hovered = mouseX >= 2 && mouseX <= sidebarRight - 2
                     && mouseY >= itemY && mouseY < itemY + ITEM_HEIGHT;
-
             boolean selected = i == selectedIndex;
 
             int bgColor;
@@ -113,7 +119,7 @@ public class SchematicScreen extends Screen {
             }
 
             if (itemY + ITEM_HEIGHT > listTop) {
-                graphics.fill(2, Math.max(itemY, listTop), leftPanelWidth - 2,
+                graphics.fill(2, Math.max(itemY, listTop), sidebarRight - 2,
                         Math.min(itemY + ITEM_HEIGHT, listBottom), bgColor);
             }
 
@@ -124,10 +130,21 @@ public class SchematicScreen extends Screen {
                     6, itemY + 12, 0xFFAAAAAA);
         }
 
-        int rightX = leftPanelWidth + 20;
+        int rightX = sidebarRight + 20;
         int infoY = 22;
 
+        graphics.text(font, Component.literal("\u00a77\u00a7lQuick Build"), cx - 80, infoY, 0xFFFFFF);
+        infoY += 26;
+
+        graphics.text(font, "\u00a77Place a schematic with Litematica,", cx - 80, infoY, 0xFFAAAAAA);
+        infoY += 12;
+        graphics.text(font, "\u00a77then click the button above.", cx - 80, infoY, 0xFFAAAAAA);
+
+        infoY = 95;
+        graphics.text(font, Component.literal("\u00a77\u00a7lFile Browser"), cx - 80, infoY, 0xFFFFFF);
+
         if (selectedSchematic != null) {
+            infoY = 22;
             graphics.text(font, Component.literal("\u00a76\u00a7l" + selectedSchematic.getName()),
                     rightX, infoY, 0xFFFFFFFF);
 
@@ -166,23 +183,22 @@ public class SchematicScreen extends Screen {
             statusText = "\u00a77Status: Idle";
         }
 
-        graphics.text(font, statusText, leftPanelWidth + 20, height - 16, 0xFFFFFFFF);
+        graphics.text(font, statusText, sidebarRight + 20, height - 16, 0xFFFFFFFF);
 
         if (statusMessage != null) {
             long elapsed = System.currentTimeMillis() - statusMessageTime;
             if (elapsed < 5000) {
                 int alpha = elapsed > 4000 ? (int) (255 * (5000 - elapsed) / 1000) : 255;
                 int color = (alpha << 24) | 0xFFFFFF;
-                graphics.text(font, statusMessage, leftPanelWidth + 20, height - 30, color);
+                graphics.text(font, statusMessage, sidebarRight + 20, height - 30, color);
             } else {
                 statusMessage = null;
             }
         }
 
         if (schematics.isEmpty()) {
-            graphics.text(font, "\u00a77No schematics found.", 6, height / 2 - 4, 0xFFAAAAAA);
-            graphics.text(font, "\u00a77Place .schematic files in", 6, height / 2 + 8, 0xFF777777);
-            graphics.text(font, "\u00a77autobuilder/schematics/ and reload.", 6, height / 2 + 20, 0xFF777777);
+            graphics.text(font, "\u00a77No .schematic / .schem / .litematic files found.", 6, height / 2 - 4, 0xFFAAAAAA);
+            graphics.text(font, "\u00a77Place files in autobuilder/schematics/ and reload.", 6, height / 2 + 8, 0xFF777777);
         }
 
         super.extractRenderState(graphics, mouseX, mouseY, delta);
@@ -190,10 +206,8 @@ public class SchematicScreen extends Screen {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean consumed) {
-        if (event.buttonInfo().button() == 0 && event.x() >= 2 && event.x() <= LIST_WIDTH - 2) {
+        if (event.buttonInfo().button() == 0 && event.x() >= 2 && event.x() <= SIDEBAR_WIDTH - 2) {
             int listTop = 22;
-            int listBottom = height - 22;
-
             for (int i = 0; i < schematics.size(); i++) {
                 int itemY = listTop - scrollOffset + i * ITEM_HEIGHT;
                 if (event.y() >= itemY && event.y() < itemY + ITEM_HEIGHT) {
@@ -202,13 +216,12 @@ public class SchematicScreen extends Screen {
                 }
             }
         }
-
         return super.mouseClicked(event, consumed);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontal, double vertical) {
-        if (mouseX <= LIST_WIDTH) {
+        if (mouseX <= SIDEBAR_WIDTH) {
             scrollOffset -= (int) (vertical * ITEM_HEIGHT);
             return true;
         }
@@ -226,9 +239,17 @@ public class SchematicScreen extends Screen {
         boolean hasSelection = selectedSchematic != null;
         boolean isBusy = buildManager.isBusy();
 
+        litematicaButton.active = !isBusy;
         startButton.active = hasSelection && !isBusy;
         gatherButton.active = hasSelection && !isBusy;
         cancelButton.active = isBusy;
+        reloadButton.active = !isBusy;
+    }
+
+    private void buildLitematica() {
+        buildManager.startLitematicaBuild();
+        setStatus("\u00a7eBuilding from Litematica placement...");
+        updateButtons();
     }
 
     private void startBuild() {

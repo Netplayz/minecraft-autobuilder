@@ -95,6 +95,20 @@ public class BuildManager {
         ));
     }
 
+    public void startLitematicaBuild() {
+        if (currentJob != null && currentJob.isActive()) {
+            sendMsg("§cAlready building! Cancel first.");
+            return;
+        }
+
+        SchematicInfo info = new SchematicInfo("Litematica Placement", "Litematica", null);
+        currentJob = new BuildJob(info, List.of());
+        currentJob.setState(BuildState.BUILDING);
+
+        baritone.getBuilderProcess().buildOpenLitematic(0);
+        sendMsg("§aStarting build from Litematica placement");
+    }
+
     public void cancelBuild() {
         if (currentJob == null) {
             sendMsg("§cNo active build job.");
