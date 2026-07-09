@@ -236,6 +236,8 @@ public class SchematicScreen extends Screen {
         boolean started = buildManager.startBuild(selectedSchematic.getName());
         if (started) {
             setStatus("\u00a7aStarted building " + selectedSchematic.getName());
+        } else {
+            setStatus("\u00a7cFailed to start build. Check chat for details.");
         }
         updateButtons();
     }
@@ -251,8 +253,12 @@ public class SchematicScreen extends Screen {
             return;
         }
 
-        AutoBuilderMod.getInstance().getMaterialManager().startGathering(reqs);
-        setStatus("\u00a7eStarted gathering " + missing + " material types");
+        boolean started = AutoBuilderMod.getInstance().getMaterialManager().startGathering(reqs);
+        if (started) {
+            setStatus("\u00a7eStarted gathering " + missing + " material types");
+        } else {
+            setStatus("\u00a7cFailed to start gathering.");
+        }
         updateButtons();
     }
 
