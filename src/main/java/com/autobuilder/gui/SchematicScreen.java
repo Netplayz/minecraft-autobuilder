@@ -84,7 +84,7 @@ public class SchematicScreen extends Screen {
 
         graphics.fill(0, 0, leftPanelWidth, height, 0x88000000);
 
-        graphics.text(font, Component.literal("\u00a76\u00a7lAutoBuilder"), 6, 6, 0xFFFFFF);
+        graphics.text(font, Component.literal("\u00a76\u00a7lAutoBuilder"), 6, 6, 0xFFFFFFFF);
 
         schematics = schematicManager.getAllSchematics();
 
@@ -117,11 +117,11 @@ public class SchematicScreen extends Screen {
                         Math.min(itemY + ITEM_HEIGHT, listBottom), bgColor);
             }
 
-            graphics.text(font, info.getName(), 6, itemY + 2, 0xFFFFFF);
+            graphics.text(font, info.getName(), 6, itemY + 2, 0xFFFFFFFF);
             graphics.text(font,
                     "\u00a77" + info.getWidth() + "\u00d7" + info.getHeight() + "\u00d7" + info.getLength()
                             + "  " + info.getTotalVolume() + " blocks",
-                    6, itemY + 12, 0xAAAAAA);
+                    6, itemY + 12, 0xFFAAAAAA);
         }
 
         int rightX = leftPanelWidth + 20;
@@ -129,21 +129,21 @@ public class SchematicScreen extends Screen {
 
         if (selectedSchematic != null) {
             graphics.text(font, Component.literal("\u00a76\u00a7l" + selectedSchematic.getName()),
-                    rightX, infoY, 0xFFFFFF);
+                    rightX, infoY, 0xFFFFFFFF);
 
             infoY += 14;
             graphics.text(font, "\u00a77Size: \u00a7f" + selectedSchematic.getWidth()
                             + " \u00d7 " + selectedSchematic.getHeight()
                             + " \u00d7 " + selectedSchematic.getLength(),
-                    rightX, infoY, 0xAAAAAA);
+                    rightX, infoY, 0xFFAAAAAA);
 
             infoY += 12;
             graphics.text(font, "\u00a77Volume: \u00a7f" + selectedSchematic.getTotalVolume() + " blocks",
-                    rightX, infoY, 0xAAAAAA);
+                    rightX, infoY, 0xFFAAAAAA);
 
             infoY += 12;
             graphics.text(font, "\u00a77File: \u00a7f" + selectedSchematic.getFileName(),
-                    rightX, infoY, 0xAAAAAA);
+                    rightX, infoY, 0xFFAAAAAA);
         }
 
         String statusText;
@@ -166,7 +166,7 @@ public class SchematicScreen extends Screen {
             statusText = "\u00a77Status: Idle";
         }
 
-        graphics.text(font, statusText, leftPanelWidth + 20, height - 16, 0xFFFFFF);
+        graphics.text(font, statusText, leftPanelWidth + 20, height - 16, 0xFFFFFFFF);
 
         if (statusMessage != null) {
             long elapsed = System.currentTimeMillis() - statusMessageTime;
@@ -180,9 +180,9 @@ public class SchematicScreen extends Screen {
         }
 
         if (schematics.isEmpty()) {
-            graphics.text(font, "\u00a77No schematics found.", 6, height / 2 - 4, 0xAAAAAA);
-            graphics.text(font, "\u00a77Place .schematic files in", 6, height / 2 + 8, 0x777777);
-            graphics.text(font, "\u00a77autobuilder/schematics/ and reload.", 6, height / 2 + 20, 0x777777);
+            graphics.text(font, "\u00a77No schematics found.", 6, height / 2 - 4, 0xFFAAAAAA);
+            graphics.text(font, "\u00a77Place .schematic files in", 6, height / 2 + 8, 0xFF777777);
+            graphics.text(font, "\u00a77autobuilder/schematics/ and reload.", 6, height / 2 + 20, 0xFF777777);
         }
 
         super.extractRenderState(graphics, mouseX, mouseY, delta);
