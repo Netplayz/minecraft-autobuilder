@@ -48,8 +48,11 @@ jar {
     from(zipTree(baritoneJar)) {
         exclude "fabric.mod.json"
     }
-    from({ zipTree(zipTree(baritoneJar).find { it.name.endsWith(".jar") && it.path.contains("META-INF/jars/") }) }) {
-        exclude "fabric.mod.json"
+    def nestedInnerJar = zipTree(baritoneJar).find { it.name.endsWith(".jar") && it.path.contains("META-INF/jars/") }
+    if (nestedInnerJar != null) {
+        from(zipTree(nestedInnerJar)) {
+            exclude "fabric.mod.json"
+        }
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

@@ -1,6 +1,6 @@
 # AutoBuilder - Minecraft Fabric Mod
 
-Automatically gathers materials and builds structures using Baritone. Supports building from Litematica in-world placements and `.schematic` / `.schem` / `.litematic` files.
+Automatically gathers materials and builds structures using Baritone. Builds directly from Litematica in-world placements — no file browsing needed.
 
 ## Requirements
 
@@ -36,23 +36,18 @@ Place the mod jar, Fabric API jar, and the Baritone API jar into your `.minecraf
 
 Install the [Litematica](https://www.curseforge.com/minecraft/mc-mods/litematica) mod to place schematics in-world for one-click building.
 
-### 5. Place schematic files (optional)
-
-Put `.schematic`, `.schem`, or `.litematic` files in `.minecraft/autobuilder/schematics/`.
-
 ## Usage
 
 ### GUI (Recommended)
 
-Press **B** to open the AutoBuilder GUI. From there you can:
+Press **B** to open the AutoBuilder GUI.
 
 | Action | Description |
 |--------|-------------|
 | **Build Litematica Placement** | Build whatever schematic you've placed in-world via Litematica |
-| **Start Build** | Build a selected file from the file browser |
-| **Gather Only** | Auto-mine missing materials for a selected file |
-| **Cancel** | Stop the current build |
-| **Reload Schematics** | Re-scan the schematics folder without restarting |
+| **Cancel Build** | Stop the current build |
+
+The GUI includes a live **Event Log** panel at the bottom showing a scrollable history of every action: build started, gathering, construction, completion, cancellation, and failures.
 
 ### Commands
 
@@ -68,9 +63,9 @@ Press **B** to open the AutoBuilder GUI. From there you can:
 
 ## How it works
 
-1. **Load**: Place a schematic in-world with Litematica, or put `.schematic`/`.schem`/`.litematic` files in `autobuilder/schematics/`
-2. **Build**: Click "Build Litematica Placement" or select a file and click "Start Build"
-3. **Gather**: If auto-gather is on and materials are missing, Baritone's `MineProcess` mines them automatically
+1. **Place**: Place a schematic in-world using the Litematica mod
+2. **Build**: Press B, click "Build Litematica Placement"
+3. **Watch**: The Event Log shows real-time progress
 4. **Construct**: Baritone's `BuilderProcess` places every block
 
 ## Architecture
@@ -80,7 +75,7 @@ autobuilder/
 ├── src/main/java/com/autobuilder/
 │   ├── AutoBuilderMod.java      # Fabric entry point, keybinding, tick
 │   ├── gui/
-│   │   └── SchematicScreen.java # In-game GUI (press B)
+│   │   └── SchematicScreen.java # In-game GUI (press B) with live event log
 │   ├── command/
 │   │   └── AutoBuildCommand.java # /autobuilder command tree
 │   ├── builder/

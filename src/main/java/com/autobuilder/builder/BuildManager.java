@@ -82,6 +82,12 @@ public class BuildManager {
     public void startBuilding() {
         if (currentJob == null) return;
 
+        var player = Minecraft.getInstance().player;
+        if (player == null) {
+            sendMsg("§cCannot build: player is not loaded.");
+            return;
+        }
+
         SchematicInfo schematic = currentJob.getSchematic();
         currentJob.setState(BuildState.BUILDING);
 
@@ -89,9 +95,9 @@ public class BuildManager {
 
         IBuilderProcess builder = baritone.getBuilderProcess();
         builder.build(schematic.getName(), schematic.getSchematic(), new BlockPos(
-                (int) Minecraft.getInstance().player.position().x,
-                (int) Minecraft.getInstance().player.position().y,
-                (int) Minecraft.getInstance().player.position().z
+                (int) player.position().x,
+                (int) player.position().y,
+                (int) player.position().z
         ));
     }
 
@@ -114,6 +120,7 @@ public class BuildManager {
         currentJob = new BuildJob(info, List.of());
         currentJob.setState(BuildState.BUILDING);
         sendMsg("§aStarting build from Litematica placement");
+        sendMsg("§7Progress tracking is unavailable for Litematica builds.");
         return true;
     }
 
@@ -174,10 +181,18 @@ public class BuildManager {
             case BUILDING -> {
                 int placed = currentJob.getBlocksPlaced();
                 int total = currentJob.getTotalBlocks();
-                int pct = total > 0 ? (int) (placed * 100.0 / total) : 0;
-                sendMsg("§7Progress: §f" + placed + "/" + total + " blocks (" + pct + "%)");
+                if (total > 0) {
+                    int pct = (int) (placed * 100.0 / total);
+                    sendMsg("§7Progress: §f" + placed + "/" + total + " blocks (" + pct + "%)");
+                } else {
+                    sendMsg("§7Progress: unknown (Litematica build)");
+                }
             }
             case FAILED -> sendMsg("§cError: §f" + currentJob.getErrorMessage());
+            case COMPLETED -> sendMsg("§aBuild completed.");
+            case IDLE -> sendMsg("§7Build is idle.");
+            case PAUSED -> sendMsg("§eBuild is paused.");
+            default -> sendMsg("§7State: " + state);
         }
     }
 

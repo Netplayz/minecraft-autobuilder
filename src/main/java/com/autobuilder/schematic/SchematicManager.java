@@ -22,7 +22,9 @@ public class SchematicManager {
         if (!Files.exists(dir)) {
             try {
                 Files.createDirectories(dir);
-            } catch (IOException ignored) {}
+            } catch (IOException e) {
+                System.err.println("[AutoBuilder] Failed to create schematics dir: " + e.getMessage());
+            }
             return;
         }
 
@@ -31,7 +33,9 @@ public class SchematicManager {
                 String name = p.getFileName().toString().toLowerCase();
                 return name.endsWith(".schematic") || name.endsWith(".schem") || name.endsWith(".litematic");
             }).forEach(this::loadSchematic);
-        } catch (IOException ignored) {}
+        } catch (IOException e) {
+            System.err.println("[AutoBuilder] Failed to list schematics dir: " + e.getMessage());
+        }
     }
 
     private void loadSchematic(Path path) {
@@ -52,7 +56,9 @@ public class SchematicManager {
                 SchematicInfo info = new SchematicInfo(name, fileName, schematic);
                 schematics.put(name.toLowerCase(), info);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            System.err.println("[AutoBuilder] Failed to load schematic " + path.getFileName() + ": " + e.getMessage());
+        }
     }
 
     public Optional<SchematicInfo> getSchematic(String name) {

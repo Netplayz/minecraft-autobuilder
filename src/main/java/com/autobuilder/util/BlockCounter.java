@@ -16,6 +16,7 @@ public class BlockCounter {
     public static Map<Block, Integer> countRequiredBlocks(SchematicInfo info) {
         Map<Block, Integer> counts = new HashMap<>();
         IStaticSchematic schematic = info.getSchematic();
+        if (schematic == null) return counts;
 
         for (int x = 0; x < info.getWidth(); x++) {
             for (int y = 0; y < info.getHeight(); y++) {
@@ -41,6 +42,7 @@ public class BlockCounter {
     }
 
     public static BlockOptionalMeta blockToBom(Block block) {
-        return new BlockOptionalMeta(BuiltInRegistries.BLOCK.getKey(block).toString());
+        Identifier id = BuiltInRegistries.BLOCK.getKey(block);
+        return new BlockOptionalMeta(id != null ? id.toString() : "minecraft:air");
     }
 }

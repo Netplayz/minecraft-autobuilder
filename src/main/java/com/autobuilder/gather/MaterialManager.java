@@ -102,6 +102,10 @@ public class MaterialManager {
 
     public void tick() {
         if (!gathering || Minecraft.getInstance().player == null) return;
+        if (currentMaterialIndex >= requirements.size()) {
+            gathering = false;
+            return;
+        }
 
         MaterialRequirement current = requirements.get(currentMaterialIndex);
         int inInv = InventoryHelper.countItem(
