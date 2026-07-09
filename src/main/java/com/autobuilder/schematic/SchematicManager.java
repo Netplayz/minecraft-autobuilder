@@ -29,7 +29,7 @@ public class SchematicManager {
         try (Stream<Path> paths = Files.list(dir)) {
             paths.filter(p -> {
                 String name = p.getFileName().toString().toLowerCase();
-                return name.endsWith(".schematic") || name.endsWith(".schem");
+                return name.endsWith(".schematic") || name.endsWith(".schem") || name.endsWith(".litematic");
             }).forEach(this::loadSchematic);
         } catch (IOException ignored) {}
     }
