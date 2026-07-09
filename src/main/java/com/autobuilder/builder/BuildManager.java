@@ -95,18 +95,26 @@ public class BuildManager {
         ));
     }
 
-    public void startLitematicaBuild() {
+    public boolean startLitematicaBuild() {
         if (currentJob != null && currentJob.isActive()) {
             sendMsg("§cAlready building! Cancel first.");
-            return;
+            return false;
+        }
+
+        IBuilderProcess builder = baritone.getBuilderProcess();
+        builder.buildOpenLitematic(0);
+
+        if (!builder.isActive()) {
+            sendMsg("§cLitematica mod not found or no placement active.");
+            sendMsg("§eInstall Litematica and place a schematic, or use the file browser with .litematic files instead.");
+            return false;
         }
 
         SchematicInfo info = new SchematicInfo("Litematica Placement", "Litematica", null);
         currentJob = new BuildJob(info, List.of());
         currentJob.setState(BuildState.BUILDING);
-
-        baritone.getBuilderProcess().buildOpenLitematic(0);
         sendMsg("§aStarting build from Litematica placement");
+        return true;
     }
 
     public void cancelBuild() {

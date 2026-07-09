@@ -247,8 +247,12 @@ public class SchematicScreen extends Screen {
     }
 
     private void buildLitematica() {
-        buildManager.startLitematicaBuild();
-        setStatus("\u00a7eBuilding from Litematica placement...");
+        boolean started = buildManager.startLitematicaBuild();
+        if (started) {
+            setStatus("\u00a7eBuilding from Litematica placement...");
+        } else {
+            setStatus("\u00a7cFailed: Litematica mod not found or no placement active.");
+        }
         updateButtons();
     }
 
